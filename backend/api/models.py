@@ -1,3 +1,9 @@
-from django.db import models
+from django.contrib.gis.db import models as gisModels
 
-# Create your models here.
+class Sighting(gisModels.Model):
+    date = gisModels.DateField()
+    species_common_name = gisModels.CharField(max_length=120)
+    count = gisModels.IntegerField()
+    behavior = gisModels.TextField(null=True, blank=True)
+    comments = gisModels.TextField(null=True, blank=True)
+    coordinates = gisModels.PointField(srid=4326)
