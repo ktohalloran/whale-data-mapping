@@ -1,6 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from django.db.models import Sum
 from api.models import Sighting
 from api.serializers import SightingListSerializer
 
@@ -16,11 +17,20 @@ class GetSightings(APIView):
         # if both query parameters, return filtered list
         if (len(request.query_params)==2):
             if request.query_params.get("species") and request.query_params.get("year"):
-                filtered_sightings = Sighting.objects.filter(
-                    species_common_name=request.query_params.get("species")
-                ).filter(date__year=request.query_params.get("year"))
-                serializer = SightingListSerializer(filtered_sightings, many=True)
-                return Response(serializer.data)
+                response_data = []
+                for month_idx in range(12):
+                    # get all sightings by species, month, and year
+                    filtered_sightings = Sighting.objects.filter(
+                        species_common_name=request.query_params.get("species")
+                    ).filter(date__year=request.query_params.get("year")).filter(date__month=month_idx+1)
+                    # get and serialize observation count of species for that month and year
+                    month_data = {
+                        "sightingCount": filtered_sightings.aggregate(Sum("count"))["count__sum"] if len(filtered_sightings) > 0 else 0,
+                        "sightingData": filtered_sightings
+                    }
+                    serializer = SightingListSerializer(month_data)
+                    response_data.append(serializer.data)
+                return Response(response_data)
             # if incorrect query parameter name, return error
             return Response(data="Incorrect query parameter provided", status=status.HTTP_400_BAD_REQUEST)
         # if one query parameter, return an error

@@ -39,7 +39,7 @@ const Chart = ({selectedSpecies, selectedYear, sightingData}) => {
     const data = {
         labels,
         datasets: [{
-            data: []
+            data: sightingData ? sightingData.map(monthSighting => monthSighting["sightingCount"]) : []
         }]
     }
     
