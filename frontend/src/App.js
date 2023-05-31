@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from "react";
 import Selector from "./components/Selector";
+import Chart from "./components/Chart";
 
 function App() {
   const [speciesList, setSpeciesList] = useState(null);
@@ -48,6 +49,9 @@ function App() {
             <div className="flex flex-row gap-7">
               <Selector name={"Species"} list={speciesList} setStateMethod={setSelectedSpecies}></Selector>
               <Selector name={"Years"} list={yearsList} setStateMethod={setSelectedYear}></Selector>
+            </div>
+            <div className="pt-10">
+              <Chart selectedSpecies={selectedSpecies} selectedYear={selectedYear} sightingData={whaleData}></Chart>
             </div>
           </div>
         </div>
