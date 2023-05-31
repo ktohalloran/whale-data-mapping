@@ -7,3 +7,6 @@ class Sighting(gisModels.Model):
     behavior = gisModels.TextField(null=True, blank=True)
     comments = gisModels.TextField(null=True, blank=True)
     coordinates = gisModels.PointField(srid=4326)
+
+    def __str__(self):
+        return f"{self.date}, {self.count} {self.species_common_name}"
