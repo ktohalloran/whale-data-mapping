@@ -8,6 +8,7 @@ import {
     Title,
     Tooltip,
     Legend,
+    scales,
   } from 'chart.js';
 
   ChartJS.register(
@@ -20,16 +21,48 @@ import {
     Legend
   );
 
+
+
 const Chart = ({selectedSpecies, selectedYear, sightingData}) => {
+    const speciesLabel = selectedSpecies === "Unknown" ? `${selectedSpecies} Whales` : `${selectedSpecies}s`
+
+    const fontFamily = "'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif"
+
     const options = {
-        responsive: true,
+        maintainAspectRatio: false,
         plugins: {
             legend: {
-                display: false
+                display: false,
+                labels: {
+                    font: {
+                        family: fontFamily
+                    }
+                }
             },
             title: {
                 display: true,
-                text: selectedSpecies && selectedYear ? `${selectedSpecies} sighted in ${selectedYear}` : ""
+                text: `${speciesLabel} sighted in ${selectedYear}`,
+                font: {
+                    family: fontFamily,
+                    size: 16,
+                    weight: 400,
+                }
+            },
+            tooltip: {
+                displayColors: false
+            }
+        },
+        scales: {
+            y: {
+                min: 0,
+                ticks: {
+                    stepSize: 2
+                }
+            },
+            x: {
+                grid: {
+                    display: false
+                }
             }
         }
     }
@@ -39,14 +72,18 @@ const Chart = ({selectedSpecies, selectedYear, sightingData}) => {
     const data = {
         labels,
         datasets: [{
-            data: sightingData ? sightingData.map(monthSighting => monthSighting["sightingCount"]) : []
+            data: sightingData ? sightingData.map(monthSighting => monthSighting["sightingCount"]) : [],
+            pointHoverBackgroundColor: "rgb(30 64 175)",
+            pointHoverBorderColor: "rgb(30 64 175)",
+            pointHoverRadius: 5,
+            borderColor: "rgb(6 182 212)",
+            pointBackgroundColor: "rgb(6 182 212)",
+            borderWidth: 1
         }]
     }
     
     return (
-        <div className="w-full h-full">
-            <Line options={options} data={data}></Line>
-        </div>
+        <Line options={options} data={data}></Line>
     )
 }
 

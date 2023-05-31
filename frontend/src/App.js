@@ -32,7 +32,7 @@ function App() {
 
   return (
     <div className="flex flex-col lg:flex-row">
-      <section className="w-full h-screen lg:basis-1/2">
+      <section className="w-full h-screen lg:w-1/2">
         <div className="header">
           <h1 className="title">
             WHALE <span className="md:tracking-wider">DATA</span> <span className="md:tracking-tighter">VIEWER</span>
@@ -45,12 +45,12 @@ function App() {
         </div>
         <div className="bg-slate-100 min-h-body">
           <div className="px-10">
-            <h3 className="text-md text-blue-900 pt-5 pb-3 text-center md:text-left">Please select a species and a year.</h3>
-            <div className="flex flex-row gap-7">
+            <h3 className="text-md text-light-gray pt-5 pb-3 text-center">Please select a species and a year.</h3>
+            <div className="flex flex-row gap-7 pb-10 text-light-gray">
               <Selector name={"Species"} list={speciesList} setStateMethod={setSelectedSpecies}></Selector>
               <Selector name={"Years"} list={yearsList} setStateMethod={setSelectedYear}></Selector>
             </div>
-            <div className="pt-10">
+            <div className={selectedSpecies && selectedYear ? "flex h-60 md:h-96" : "hidden"}>
               <Chart selectedSpecies={selectedSpecies} selectedYear={selectedYear} sightingData={whaleData}></Chart>
             </div>
           </div>

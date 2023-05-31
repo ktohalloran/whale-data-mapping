@@ -8,6 +8,9 @@ module.exports = {
       minHeight: {
         header: "30%",
         body: "70%"
+      },
+      colors: {
+        "light-gray": "#606061"
       }
     },
   },
