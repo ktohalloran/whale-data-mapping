@@ -30,29 +30,29 @@ function App() {
   }, [selectedSpecies, selectedYear])
 
   return (
-    <div>
-      <header className="App-header"></header>
-      <body>
-        <div className="flex flex-row">
-          <section className="w-1/2 min-h-screen">
-            <div className="flex flex-row bg-cyan-500 min-h-header px-5 items-center">
-              <h1 className="flex-none text-5xl text-white w-1/4 text-right font-medium tracking-tight">WHALE <span className="tracking-wider">DATA</span> <span className="tracking-tighter">VIEWER</span></h1>
-              <div className="flex-none h-28 bg-blue-800 w-1 mt-4 mx-5 self-center"></div>
-              <h2 className="flex-shrink text-lg text-white pt-5">View charts and maps of whale sightings from the lighthouse on the Farallon Islands, near San Francisco, CA.</h2>
-            </div>
-            <div className="bg-slate-100 min-h-body">
-              <div className="px-10">
-                <h3 className="text-md text-blue-900 pt-5 pb-3">Please select a species and a year.</h3>
-                <div className="flex flex-row gap-7">
-                  <Selector name={"Species"} list={speciesList} setStateMethod={setSelectedSpecies}></Selector>
-                  <Selector name={"Years"} list={yearsList} setStateMethod={setSelectedYear}></Selector>
-                </div>
-              </div>
-            </div>
-          </section>
-          <section></section>
+    <div className="flex flex-col lg:flex-row">
+      <section className="w-full h-screen lg:basis-1/2">
+        <div className="header">
+          <h1 className="title">
+            WHALE <span className="md:tracking-wider">DATA</span> <span className="md:tracking-tighter">VIEWER</span>
+          </h1>
+          <div className="hidden md:flex flex-none h-28 bg-blue-800 w-1 mt-4 self-center"></div>
+          <div className="md:hidden flex-none h-1 bg-blue-800 w-36 ml-4 self-center"></div>
+          <h2 className="flex-shrink text-lg text-white md:pt-5 md:text-left md:pr-10">
+            View charts and maps of whale sightings from the lighthouse on the Farallon Islands, near San Francisco, CA.
+          </h2>
         </div>
-      </body>
+        <div className="bg-slate-100 min-h-body">
+          <div className="px-10">
+            <h3 className="text-md text-blue-900 pt-5 pb-3 text-center md:text-left">Please select a species and a year.</h3>
+            <div className="flex flex-row gap-7">
+              <Selector name={"Species"} list={speciesList} setStateMethod={setSelectedSpecies}></Selector>
+              <Selector name={"Years"} list={yearsList} setStateMethod={setSelectedYear}></Selector>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section className="hidden md:flex"></section>
     </div>
   );
 }
