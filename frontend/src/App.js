@@ -1,6 +1,9 @@
 import React, {useEffect, useState} from "react";
 import Selector from "./components/Selector";
 import Chart from "./components/Chart";
+import Map from "./components/Map";
+
+import "mapbox-gl/dist/mapbox-gl.css";
 
 function App() {
   const [speciesList, setSpeciesList] = useState(null);
@@ -56,7 +59,9 @@ function App() {
           </div>
         </div>
       </section>
-      <section className="hidden md:flex"></section>
+      <section className="lg:w-1/2">
+          <Map sightingData={whaleData}></Map>
+      </section>
     </div>
   );
 }
