@@ -7,7 +7,8 @@ module.exports = {
     extend: {
       minHeight: {
         header: "30%",
-        body: "70%"
+        body: "70%",
+        mobileHeader: "35%"
       },
       height: {
         mobileMap: "400px"

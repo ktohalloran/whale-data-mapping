@@ -2,8 +2,6 @@ import mapboxgl from "mapbox-gl";
 import React, { useEffect, useState } from "react";
 import { renderToStaticMarkup } from "react-dom/server"
 
-import "mapbox-gl/dist/mapbox-gl.css";
-
 const token = process.env.REACT_APP_MAPBOXKEY
 if (token) {mapboxgl.accessToken = token}
 
@@ -90,7 +88,12 @@ const Map = ({sightingData, selectedMonth, mapType}) => {
     }, [map, sightingData])
 
     useEffect(() => {
-        if (map && selectedMonth !== null && map.getSource(`${selectedMonth}-sightings`)) {
+        if (
+            map 
+            && selectedMonth !== null 
+            && map.getSource(`${selectedMonth}-sightings`) 
+            && !map.getLayer(`${selectedMonth}-month-sightings`)
+        ) {
             setHighlightedMonth(selectedMonth)
             map.addLayer({
                 "id": `${selectedMonth}-month-sightings`,
@@ -101,11 +104,15 @@ const Map = ({sightingData, selectedMonth, mapType}) => {
                     "circle-color": "#1e40af"
                 }
             })
-        } else if (map && highlightedMonth !== null && selectedMonth !== highlightedMonth) {
-            map.removeLayer(`${highlightedMonth}-month-sightings`)
-            setHighlightedMonth(selectedMonth)
         }
     }, [map, selectedMonth, highlightedMonth])
+
+    useEffect(() => {
+        if (map && selectedMonth !== highlightedMonth) {
+            if (highlightedMonth !== null) {map.removeLayer(`${highlightedMonth}-month-sightings`)}
+            setHighlightedMonth(selectedMonth)
+        }
+    }, [map, highlightedMonth, selectedMonth])
 
     return (
         mapType === "mobile"
