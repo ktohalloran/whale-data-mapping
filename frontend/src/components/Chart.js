@@ -20,7 +20,7 @@ import {
     Legend
   );
 
-
+export const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
 
 const Chart = ({selectedSpecies, selectedYear, sightingData, setMonthMethod}) => {
     const speciesLabel = selectedSpecies === "Unknown" ? `${selectedSpecies} Whales` : `${selectedSpecies}s`
@@ -69,7 +69,7 @@ const Chart = ({selectedSpecies, selectedYear, sightingData, setMonthMethod}) =>
         }
     }
 
-    const labels = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+    const labels = MONTHS
     
     const data = {
         labels,

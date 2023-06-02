@@ -9,8 +9,14 @@ module.exports = {
         header: "30%",
         body: "70%"
       },
+      height: {
+        mobileMap: "400px"
+      },
       colors: {
         "light-gray": "#606061"
+      },
+      borderWidth: {
+        1: "1px"
       }
     },
   },

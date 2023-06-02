@@ -2,10 +2,12 @@ import mapboxgl from "mapbox-gl";
 import React, { useEffect, useState } from "react";
 import { renderToStaticMarkup } from "react-dom/server"
 
+import "mapbox-gl/dist/mapbox-gl.css";
+
 const token = process.env.REACT_APP_MAPBOXKEY
 if (token) {mapboxgl.accessToken = token}
 
-const Map = ({sightingData, selectedMonth}) => {
+const Map = ({sightingData, selectedMonth, mapType}) => {
     const [map, setMap] = useState(null);
     const [highlightedMonth, setHighlightedMonth] = useState(selectedMonth ? selectedMonth : null)
 
@@ -24,13 +26,17 @@ const Map = ({sightingData, selectedMonth}) => {
             style: "mapbox://styles/mapbox/streets-v11",
             center: [-123.002975, 37.698448],
             zoom: 11,
-            container: "map-container"
+            container: `${mapType}-map-container`
         });
+        if (mapType === "mobile") {
+            map.scrollZoom.disable()
+            map.addControl(new mapboxgl.NavigationControl());
+        }
         setMap(map)
 
         if (sightingData) {
             map.on("load", () => {
-                sightingData.map((sightingByMonth, idx) => {
+                sightingData.forEach((sightingByMonth, idx) => {
                     map.addSource(`${idx}-sightings`, {
                         "type": "geojson",
                         "data": sightingByMonth["sightingData"]
@@ -67,7 +73,8 @@ const Map = ({sightingData, selectedMonth}) => {
                 })
             })
         }
-    }, [sightingData])
+        return () => map.remove()
+    }, [sightingData, mapType])
 
     useEffect(() => {
         if (map && sightingData) {
@@ -98,9 +105,13 @@ const Map = ({sightingData, selectedMonth}) => {
             map.removeLayer(`${highlightedMonth}-month-sightings`)
             setHighlightedMonth(selectedMonth)
         }
-    }, [selectedMonth])
+    }, [map, selectedMonth, highlightedMonth])
 
-    return <div id="map-container" className="h-screen"></div>
+    return (
+        mapType === "mobile"
+            ? <div id={`${mapType}-map-container`} className="h-mobileMap"></div>
+            : <div id={`${mapType}-map-container`} className="h-screen"></div>
+    )
 }
 
 export default Map;

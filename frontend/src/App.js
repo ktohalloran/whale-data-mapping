@@ -4,6 +4,12 @@ import Chart from "./components/Chart";
 import Map from "./components/Map";
 
 import "mapbox-gl/dist/mapbox-gl.css";
+import MobileMapToggle from "./components/MobileMapToggle";
+
+  const isWindowNarrow = (width) => {
+    // Tailwind's default minimum screen size for large screens
+    return width < 1024
+  }
 
 function App() {
   const [speciesList, setSpeciesList] = useState(null);
@@ -12,6 +18,8 @@ function App() {
   const [selectedYear, setSelectedYear] = useState(null);
   const [selectedMonth, setSelectedMonth] = useState(null);
   const [whaleData, setWhaleData] = useState(null);
+  const [mapVisible, setMapVisible] = useState(false);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
   useEffect(() => {
     const fetchYearAndSpeciesLists = async () => {
@@ -34,6 +42,16 @@ function App() {
     }
   }, [selectedSpecies, selectedYear])
 
+  useEffect(() => {
+    const handleWindowResize = () => {
+      setWindowWidth(window.innerWidth);
+    }
+
+    window.addEventListener('resize', handleWindowResize);
+    return () => {
+      window.removeEventListener('resize', handleWindowResize)
+    }
+  }, [])
 
   return (
     <div className="flex flex-col lg:flex-row">
@@ -50,23 +68,29 @@ function App() {
         </div>
         <div className="bg-slate-100 min-h-body">
           <div className="px-10">
-            <h3 className="text-md text-light-gray pt-5 pb-3 text-center">Please select a species and a year.</h3>
-            <div className="flex flex-row gap-7 pb-10 text-light-gray">
-              <Selector name={"Species"} list={speciesList} setStateMethod={setSelectedSpecies}></Selector>
-              <Selector name={"Years"} list={yearsList} setStateMethod={setSelectedYear}></Selector>
+              <h3 className="text-md text-light-gray pt-5 pb-3 text-center">Please select a species and a year.</h3>
+              <div className="flex flex-row gap-7 pb-10 text-light-gray">
+                <Selector name={"Species"} list={speciesList} setStateMethod={setSelectedSpecies}></Selector>
+                <Selector name={"Years"} list={yearsList} setStateMethod={setSelectedYear}></Selector>
+              </div>
+              <div className={selectedSpecies && selectedYear ? mapVisible && isWindowNarrow(windowWidth) ? "hidden" : "flex h-60 md:h-96" : "hidden"}>
+                <Chart 
+                  selectedSpecies={selectedSpecies} 
+                  selectedYear={selectedYear} 
+                  sightingData={whaleData} 
+                  setMonthMethod={setSelectedMonth}></Chart>
+              </div>
             </div>
-            <div className={selectedSpecies && selectedYear ? "flex h-60 md:h-96" : "hidden"}>
-              <Chart 
-                selectedSpecies={selectedSpecies} 
-                selectedYear={selectedYear} 
-                sightingData={whaleData} 
-                setMonthMethod={setSelectedMonth}></Chart>
+            <div className={mapVisible && isWindowNarrow(windowWidth) ? "block" : "hidden"}>
+              <Map mapType={"mobile"} sightingData={whaleData} selectedMonth={selectedMonth}></Map>
             </div>
-          </div>
+            <div className={selectedSpecies && selectedYear && isWindowNarrow(windowWidth) ? `flex m-5 ${mapVisible ? "justify-start" : "justify-end"}` : "hidden"}>
+              <MobileMapToggle mapVisible={mapVisible} setMapVisibleMethod={setMapVisible} setSelectedMonthMethod={setSelectedMonth}></MobileMapToggle>
+            </div>
         </div>
       </section>
       <section className="hidden lg:block lg:w-1/2">
-          <Map sightingData={whaleData} selectedMonth={selectedMonth}></Map>
+          <Map mapType={"desktop"} sightingData={whaleData} selectedMonth={selectedMonth}></Map>
       </section>
     </div>
   );
