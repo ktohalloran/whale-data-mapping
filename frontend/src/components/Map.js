@@ -5,8 +5,9 @@ import { renderToStaticMarkup } from "react-dom/server"
 const token = process.env.REACT_APP_MAPBOXKEY
 if (token) {mapboxgl.accessToken = token}
 
-const Map = ({sightingData}) => {
+const Map = ({sightingData, selectedMonth}) => {
     const [map, setMap] = useState(null);
+    const [highlightedMonth, setHighlightedMonth] = useState(selectedMonth ? selectedMonth : null)
 
     const getPopUpText = (sightingProperties) => {
         const content =
@@ -74,11 +75,30 @@ const Map = ({sightingData}) => {
                 const sightingsSource = map.getSource(`${idx}-sightings`)
                 if (sightingsSource) {
                     map.removeLayer(`${idx}-sightings`)
+                    map.removeLayer(`${idx}-month-sightings`)
                     map.removeSource(`${idx}-sightings`)
                 }
             }
         }
     }, [map, sightingData])
+
+    useEffect(() => {
+        if (map && selectedMonth !== null && map.getSource(`${selectedMonth}-sightings`)) {
+            setHighlightedMonth(selectedMonth)
+            map.addLayer({
+                "id": `${selectedMonth}-month-sightings`,
+                "type": "circle",
+                "source": `${selectedMonth}-sightings`,
+                "paint": {
+                    "circle-radius": 6,
+                    "circle-color": "#1e40af"
+                }
+            })
+        } else if (map && highlightedMonth !== null && selectedMonth !== highlightedMonth) {
+            map.removeLayer(`${highlightedMonth}-month-sightings`)
+            setHighlightedMonth(selectedMonth)
+        }
+    }, [selectedMonth])
 
     return <div id="map-container" className="h-screen"></div>
 }

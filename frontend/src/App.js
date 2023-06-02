@@ -10,6 +10,7 @@ function App() {
   const [yearsList, setYearsList] = useState(null);
   const [selectedSpecies, setSelectedSpecies] = useState(null);
   const [selectedYear, setSelectedYear] = useState(null);
+  const [selectedMonth, setSelectedMonth] = useState(null);
   const [whaleData, setWhaleData] = useState(null);
 
   useEffect(() => {
@@ -33,6 +34,7 @@ function App() {
     }
   }, [selectedSpecies, selectedYear])
 
+
   return (
     <div className="flex flex-col lg:flex-row">
       <section className="w-full h-screen lg:w-1/2">
@@ -54,13 +56,17 @@ function App() {
               <Selector name={"Years"} list={yearsList} setStateMethod={setSelectedYear}></Selector>
             </div>
             <div className={selectedSpecies && selectedYear ? "flex h-60 md:h-96" : "hidden"}>
-              <Chart selectedSpecies={selectedSpecies} selectedYear={selectedYear} sightingData={whaleData}></Chart>
+              <Chart 
+                selectedSpecies={selectedSpecies} 
+                selectedYear={selectedYear} 
+                sightingData={whaleData} 
+                setMonthMethod={setSelectedMonth}></Chart>
             </div>
           </div>
         </div>
       </section>
-      <section className="lg:w-1/2">
-          <Map sightingData={whaleData}></Map>
+      <section className="hidden lg:block lg:w-1/2">
+          <Map sightingData={whaleData} selectedMonth={selectedMonth}></Map>
       </section>
     </div>
   );
