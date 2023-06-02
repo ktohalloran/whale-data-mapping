@@ -1,11 +1,22 @@
 import mapboxgl from "mapbox-gl";
 import React, { useEffect, useState } from "react";
+import { renderToStaticMarkup } from "react-dom/server"
 
 const token = process.env.REACT_APP_MAPBOXKEY
 if (token) {mapboxgl.accessToken = token}
 
 const Map = ({sightingData}) => {
     const [map, setMap] = useState(null);
+
+    const getPopUpText = (sightingProperties) => {
+        const content =
+            <div className="text-center">
+                <strong>{new Date(sightingProperties.date).toLocaleDateString()}</strong><br />
+                Count: {sightingProperties.count}<br />
+                {sightingProperties.behavior ? `Behavior: ${sightingProperties.behavior}` : null}
+            </div>
+        return renderToStaticMarkup(content)
+    }
 
     useEffect(() => {
         const map = new mapboxgl.Map({
@@ -33,6 +44,24 @@ const Map = ({sightingData}) => {
                             "circle-color": "white",
                             "circle-stroke-color": "#606061"
                         }
+                    })
+
+                    const popup = new mapboxgl.Popup({
+                        closeButton: false,
+                        closeOnClick: false
+                    })
+
+                    map.on("mouseenter", `${idx}-sightings`, (event) => {
+                        map.getCanvas().style.cursor = "pointer"
+                        const coords = event.features[0].geometry.coordinates.slice()
+                        const properties = event.features[0].properties
+                        const sightingDetails = getPopUpText(properties)
+                        popup.setLngLat(coords).setHTML(sightingDetails).addTo(map)
+                    })
+
+                    map.on("mouseleave", `${idx}-sightings`, () => {
+                        map.getCanvas().style.cursor = ""
+                        popup.remove()
                     })
                 })
             })
