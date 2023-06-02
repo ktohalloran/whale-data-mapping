@@ -7,8 +7,7 @@ import {
     LineElement,
     Title,
     Tooltip,
-    Legend,
-    scales,
+    Legend
   } from 'chart.js';
 
   ChartJS.register(
@@ -23,7 +22,7 @@ import {
 
 
 
-const Chart = ({selectedSpecies, selectedYear, sightingData}) => {
+const Chart = ({selectedSpecies, selectedYear, sightingData, setMonthMethod}) => {
     const speciesLabel = selectedSpecies === "Unknown" ? `${selectedSpecies} Whales` : `${selectedSpecies}s`
 
     const fontFamily = "'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif"
@@ -64,6 +63,9 @@ const Chart = ({selectedSpecies, selectedYear, sightingData}) => {
                     display: false
                 }
             }
+        },
+        onHover: (e, elements) => {
+            return elements.length > 0 ? setMonthMethod(elements[0]["index"]) : setMonthMethod(null)
         }
     }
 
