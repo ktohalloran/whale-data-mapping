@@ -108,7 +108,7 @@ const Map = ({sightingData, selectedMonth, mapType, mapVisible}) => {
                     }
                 })
         }
-    }, [map, selectedMonth])
+    }, [map, selectedMonth, mapType])
 
     useEffect (() => {
         if (map 
@@ -119,7 +119,7 @@ const Map = ({sightingData, selectedMonth, mapType, mapVisible}) => {
             map.removeLayer(`${highlightedMonth}-month-sightings`)
             setHighlightedMonth(selectedMonth)
         }
-    }, [map, highlightedMonth, selectedMonth])
+    }, [map, highlightedMonth, selectedMonth, mapType])
 
     return (
         mapType === "mobile"
