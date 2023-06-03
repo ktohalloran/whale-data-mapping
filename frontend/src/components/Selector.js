@@ -6,8 +6,8 @@ const Selector = ({name, list, setStateMethod}) => {
 
     return (
         list
-        ? (<select className="w-full" onChange={handleChange}>
-            <option>{name}</option>
+        ? (<select className="w-full min-w-fit rounded-sm" onChange={handleChange}>
+            <option value={""}>{name}</option>
             {list.map((option) => {
                 return <option key={option}>{option}</option>
             })}

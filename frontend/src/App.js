@@ -69,11 +69,11 @@ function App() {
         <div className="bg-slate-100 min-h-mobileBody md:min-h-body">
           <div className="px-10">
               <h3 className="text-md text-light-gray pt-5 pb-3 text-center">Please select a species and a year.</h3>
-              <div className="flex flex-row gap-7 pb-10 text-light-gray">
+              <div className={speciesList && yearsList ? "flex flex-row gap-2 md:gap-7 pb-10 text-light-gray" : "hidden"}>
                 <Selector name={"Species"} list={speciesList} setStateMethod={setSelectedSpecies}></Selector>
                 <Selector name={"Years"} list={yearsList} setStateMethod={setSelectedYear}></Selector>
               </div>
-              <div className={selectedSpecies && selectedYear ? mobileMapVisible && isWindowNarrow(windowWidth) ? "hidden" : "flex h-60 md:h-96" : "hidden"}>
+              <div className={selectedSpecies && selectedYear ? mobileMapVisible && isWindowNarrow(windowWidth) ? "hidden" : "flex h-80 md:h-96" : "hidden"}>
                 <Chart 
                   selectedSpecies={selectedSpecies} 
                   selectedYear={selectedYear} 

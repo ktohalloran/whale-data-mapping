@@ -7,7 +7,8 @@ import {
     LineElement,
     Title,
     Tooltip,
-    Legend
+    Legend,
+    Filler
   } from 'chart.js';
 
   ChartJS.register(
@@ -17,7 +18,8 @@ import {
     LineElement,
     Title,
     Tooltip,
-    Legend
+    Legend,
+    Filler
   );
 
 
@@ -40,7 +42,7 @@ const Chart = ({selectedSpecies, selectedYear, sightingData, setMonthMethod}) =>
             },
             title: {
                 display: true,
-                text: `${speciesLabel} sighted in ${selectedYear}`,
+                text: `Number of ${speciesLabel} sighted in ${selectedYear}`,
                 font: {
                     family: fontFamily,
                     size: 16,
@@ -48,7 +50,13 @@ const Chart = ({selectedSpecies, selectedYear, sightingData, setMonthMethod}) =>
                 }
             },
             tooltip: {
-                displayColors: false
+                displayColors: false,
+                backgroundColor: "white",
+                titleColor: "black",
+                titleAlign: "center",
+                bodyColor: "black",
+                bodyAlign: "center",
+                cornerRadius: 3
             }
         },
         scales: {
@@ -80,7 +88,10 @@ const Chart = ({selectedSpecies, selectedYear, sightingData, setMonthMethod}) =>
             pointHoverRadius: 5,
             borderColor: "rgb(6 182 212)",
             pointBackgroundColor: "rgb(6 182 212)",
-            borderWidth: 1
+            borderWidth: 1,
+            fill: true,
+            backgroundColor: "rgba(6, 182, 212, .1)",
+            tension: .4
         }]
     }
     
