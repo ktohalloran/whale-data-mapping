@@ -1,3 +1,5 @@
+import React from "react"
+
 const Selector = ({name, list, setStateMethod}) => {
 
     const handleChange = (e) => {

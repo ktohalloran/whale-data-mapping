@@ -4,7 +4,8 @@ from api.models import Sighting
 
 class GeometryDataSerializer(gis_serializers.GeoFeatureModelSerializer):
     """
-    Serializes the geographic data and properties related to the sighting
+    Serializes the geographic data and properties related to the sighting. Returns
+    a Feature Collection.
     """
     speciesCommonName = serializers.CharField(max_length=120, source="species_common_name")
 
@@ -16,7 +17,7 @@ class GeometryDataSerializer(gis_serializers.GeoFeatureModelSerializer):
 
 class SightingListSerializer(serializers.Serializer):
     """
-    Serializes the observation count data per month
+    Serializes the observation data per month
     """
     sightingCount = serializers.IntegerField()
     sightingData = GeometryDataSerializer(many=True)

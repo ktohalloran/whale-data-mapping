@@ -12,6 +12,8 @@ const Map = ({sightingData, selectedMonth, mapType, mapVisible}) => {
     const [highlightedMonth, setHighlightedMonth] = useState(null)
 
     const getPopUpText = (sightingProperties) => {
+        // Generate as JSX for use of Tailwind classes, but return as static markup
+        // for addition to popups as HTML
         const content =
             <div className="text-center">
                 <strong>{new Date(sightingProperties.date).toLocaleDateString()}</strong><br />
@@ -22,6 +24,9 @@ const Map = ({sightingData, selectedMonth, mapType, mapVisible}) => {
     }
 
     useEffect(() => {
+        // Don't create map unless mapVisible=true. mapVisible is always true on 
+        // desktop, but on mobile don't create map in a hidden container because
+        // it causes issues with styling
         if (mapVisible) {
             const map = new mapboxgl.Map({
                 style: "mapbox://styles/mapbox/streets-v11",
@@ -37,6 +42,7 @@ const Map = ({sightingData, selectedMonth, mapType, mapVisible}) => {
 
             if (sightingData) {
                 map.on("load", () => {
+                    // Map the sightingData values in sightingData in app state to map sources and layers
                     sightingData.forEach((sightingByMonth, idx) => {
                         map.addSource(`${idx}-sightings`, {
                             "type": "geojson",
@@ -59,6 +65,7 @@ const Map = ({sightingData, selectedMonth, mapType, mapVisible}) => {
                             closeOnClick: false
                         })
 
+                        // Add popup on hover over point
                         map.on("mouseenter", `${idx}-sightings`, (event) => {
                             map.getCanvas().style.cursor = "pointer"
                             const coords = event.features[0].geometry.coordinates.slice()
@@ -78,6 +85,8 @@ const Map = ({sightingData, selectedMonth, mapType, mapVisible}) => {
     }, [sightingData, mapType, mapVisible])
 
     useEffect(() => {
+        // When sightingData changes, remove the former layers and sources
+        // for the addition of the new sources and layers
         if (map && sightingData) {
             for (const idx in sightingData.length) {
                 const sightingsSource = map.getSource(`${idx}-sightings`)
@@ -91,6 +100,8 @@ const Map = ({sightingData, selectedMonth, mapType, mapVisible}) => {
     }, [map, sightingData])
 
     useEffect(() => {
+        // Implements the month hover effect on desktop. When a month has been
+        // selected, check for corresponding map layer and if it doesn't exist, add it
         if (map
             && selectedMonth !== null
             && mapType === "desktop"
@@ -111,6 +122,9 @@ const Map = ({sightingData, selectedMonth, mapType, mapVisible}) => {
     }, [map, selectedMonth, mapType])
 
     useEffect (() => {
+        // Removes the month layer. Moving the mouse off of a month in
+        // the chart sets selectedMonth to null. Check for an existing
+        // layer based on the previous selection and if it exists, remove it
         if (map 
             && selectedMonth !== highlightedMonth 
             && mapType === "desktop"
@@ -122,6 +136,8 @@ const Map = ({sightingData, selectedMonth, mapType, mapVisible}) => {
     }, [map, highlightedMonth, selectedMonth, mapType])
 
     return (
+        // Mapbox had trouble rendering in a container with a conditional height,
+        // so conditionally return a container with a set height instead
         mapType === "mobile"
             ? <div id={`${mapType}-map-container`} className="h-mobileMap"></div>
             : <div id={`${mapType}-map-container`} className="h-screen"></div>

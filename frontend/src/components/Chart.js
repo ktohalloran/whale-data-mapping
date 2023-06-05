@@ -1,3 +1,4 @@
+import React from "react";
 import { Line } from "react-chartjs-2";
 import {
     Chart as ChartJS,
@@ -23,7 +24,8 @@ import {
   );
 
 
-
+// Maps the sightingCount values from sightingData app state to corresponding month; hovering over a month's 
+// data point sets app selectedMonth state, which is then used to highlight the corresponding sightings on the map
 const Chart = ({selectedSpecies, selectedYear, sightingData, setMonthMethod}) => {
     const speciesLabel = selectedSpecies === "Unknown" ? `${selectedSpecies} Whales` : `${selectedSpecies}s`
 
@@ -77,6 +79,7 @@ const Chart = ({selectedSpecies, selectedYear, sightingData, setMonthMethod}) =>
         }
     }
 
+    // x-axis labels
     const labels = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
     
     const data = {
