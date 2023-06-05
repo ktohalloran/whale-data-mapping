@@ -1,6 +1,7 @@
 from django.contrib.gis.db import models as gisModels
 
 class Sighting(gisModels.Model):
+    # Create table for storing sighting data, including geometries
     date = gisModels.DateField()
     species_common_name = gisModels.CharField(max_length=120)
     count = gisModels.IntegerField()

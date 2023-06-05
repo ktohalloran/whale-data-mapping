@@ -8,6 +8,10 @@
   .title {
     @apply flex-none text-5xl text-white font-medium md:tracking-tight md:text-right md:basis-1/4;
   }
+
+  .mobileMapToggle {
+    @apply bg-slate-200 rounded-lg max-w-fit h-10 p-2 text-sm text-light-gray border-1 cursor-pointer border-gray-300 border-solid;
+  }
 }
 
 @tailwind components;

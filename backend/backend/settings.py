@@ -14,6 +14,7 @@ from pathlib import Path
 import os
 import environ
 
+# Use environment variables for secrets
 env = environ.Env()
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

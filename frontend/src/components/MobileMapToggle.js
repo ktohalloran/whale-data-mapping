@@ -1,7 +1,9 @@
-const MobileMapToggle = ({mapVisible, setMapVisibleMethod, setSelectedMonthMethod}) => {
+import React from "react";
+
+const MobileMapToggle = ({mapVisible, setMapVisibleMethod}) => {
     return (
         <div 
-            className={"bg-slate-200 rounded-lg max-w-fit h-10 p-2 text-sm text-light-gray border-1 cursor-pointer border-gray-300 border-solid"}
+            className="mobileMapToggle"
             onClick={() => {
                 setMapVisibleMethod(!mapVisible)
             }}

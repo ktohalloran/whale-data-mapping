@@ -1,3 +1,4 @@
+import React from "react";
 import { Line } from "react-chartjs-2";
 import {
     Chart as ChartJS,
@@ -7,7 +8,8 @@ import {
     LineElement,
     Title,
     Tooltip,
-    Legend
+    Legend,
+    Filler
   } from 'chart.js';
 
   ChartJS.register(
@@ -17,11 +19,13 @@ import {
     LineElement,
     Title,
     Tooltip,
-    Legend
+    Legend,
+    Filler
   );
 
 
-
+// Maps the sightingCount values from sightingData app state to corresponding month; hovering over a month's 
+// data point sets app selectedMonth state, which is then used to highlight the corresponding sightings on the map
 const Chart = ({selectedSpecies, selectedYear, sightingData, setMonthMethod}) => {
     const speciesLabel = selectedSpecies === "Unknown" ? `${selectedSpecies} Whales` : `${selectedSpecies}s`
 
@@ -40,7 +44,7 @@ const Chart = ({selectedSpecies, selectedYear, sightingData, setMonthMethod}) =>
             },
             title: {
                 display: true,
-                text: `${speciesLabel} sighted in ${selectedYear}`,
+                text: `Number of ${speciesLabel} sighted in ${selectedYear}`,
                 font: {
                     family: fontFamily,
                     size: 16,
@@ -48,7 +52,13 @@ const Chart = ({selectedSpecies, selectedYear, sightingData, setMonthMethod}) =>
                 }
             },
             tooltip: {
-                displayColors: false
+                displayColors: false,
+                backgroundColor: "white",
+                titleColor: "black",
+                titleAlign: "center",
+                bodyColor: "black",
+                bodyAlign: "center",
+                cornerRadius: 3
             }
         },
         scales: {
@@ -69,6 +79,7 @@ const Chart = ({selectedSpecies, selectedYear, sightingData, setMonthMethod}) =>
         }
     }
 
+    // x-axis labels
     const labels = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
     
     const data = {
@@ -80,7 +91,10 @@ const Chart = ({selectedSpecies, selectedYear, sightingData, setMonthMethod}) =>
             pointHoverRadius: 5,
             borderColor: "rgb(6 182 212)",
             pointBackgroundColor: "rgb(6 182 212)",
-            borderWidth: 1
+            borderWidth: 1,
+            fill: true,
+            backgroundColor: "rgba(6, 182, 212, .1)",
+            tension: .4
         }]
     }
     

@@ -12,6 +12,8 @@ const Map = ({sightingData, selectedMonth, mapType, mapVisible}) => {
     const [highlightedMonth, setHighlightedMonth] = useState(null)
 
     const getPopUpText = (sightingProperties) => {
+        // Generate as JSX for use of Tailwind classes, but return as static markup
+        // for addition to popups as HTML
         const content =
             <div className="text-center">
                 <strong>{new Date(sightingProperties.date).toLocaleDateString()}</strong><br />
@@ -22,6 +24,9 @@ const Map = ({sightingData, selectedMonth, mapType, mapVisible}) => {
     }
 
     useEffect(() => {
+        // Don't create map unless mapVisible=true. mapVisible is always true on 
+        // desktop, but on mobile don't create map in a hidden container because
+        // it causes issues with styling
         if (mapVisible) {
             const map = new mapboxgl.Map({
                 style: "mapbox://styles/mapbox/streets-v11",
@@ -37,6 +42,7 @@ const Map = ({sightingData, selectedMonth, mapType, mapVisible}) => {
 
             if (sightingData) {
                 map.on("load", () => {
+                    // Map the sightingData values in sightingData in app state to map sources and layers
                     sightingData.forEach((sightingByMonth, idx) => {
                         map.addSource(`${idx}-sightings`, {
                             "type": "geojson",
@@ -59,6 +65,7 @@ const Map = ({sightingData, selectedMonth, mapType, mapVisible}) => {
                             closeOnClick: false
                         })
 
+                        // Add popup on hover over point
                         map.on("mouseenter", `${idx}-sightings`, (event) => {
                             map.getCanvas().style.cursor = "pointer"
                             const coords = event.features[0].geometry.coordinates.slice()
@@ -78,12 +85,13 @@ const Map = ({sightingData, selectedMonth, mapType, mapVisible}) => {
     }, [sightingData, mapType, mapVisible])
 
     useEffect(() => {
+        // When sightingData changes, remove the former layers and sources
+        // for the addition of the new sources and layers
         if (map && sightingData) {
             for (const idx in sightingData.length) {
                 const sightingsSource = map.getSource(`${idx}-sightings`)
                 if (sightingsSource) {
                     map.removeLayer(`${idx}-sightings`)
-                    map.removeLayer(`${idx}-month-sightings`)
                     map.removeSource(`${idx}-sightings`)
                 }
             }
@@ -91,37 +99,40 @@ const Map = ({sightingData, selectedMonth, mapType, mapVisible}) => {
     }, [map, sightingData])
 
     useEffect(() => {
+        // Implements the month hover effect on desktop. When a month has been
+        // selected on the chart, set that layer's style to highlight it
         if (map
             && selectedMonth !== null
             && mapType === "desktop"
             && map.getSource(`${selectedMonth}-sightings`) 
-            && !map.getLayer(`${selectedMonth}-month-sightings`)
+            && map.getLayer(`${selectedMonth}-sightings`)
             ) { 
                 setHighlightedMonth(selectedMonth)
-                map.addLayer({
-                    "id": `${selectedMonth}-month-sightings`,
-                    "type": "circle",
-                    "source": `${selectedMonth}-sightings`,
-                    "paint": {
-                        "circle-radius": 6,
-                        "circle-color": "#1e40af"
-                    }
-                })
+                map.setPaintProperty(`${selectedMonth}-sightings`, "circle-color", "#1e40af");
+                map.setPaintProperty(`${selectedMonth}-sightings`, "circle-radius", 6);
+                map.setPaintProperty(`${selectedMonth}-sightings`, "circle-stroke-width", 0);
         }
-    }, [map, selectedMonth])
+    }, [map, selectedMonth, mapType])
 
     useEffect (() => {
+        // Resets the month's layer styling. Moving the mouse off of a month in
+        // the chart sets selectedMonth to null. 
         if (map 
-            && selectedMonth !== highlightedMonth 
+            && highlightedMonth !== null
             && mapType === "desktop"
-            && map.getLayer(`${highlightedMonth}-month-sightings`)
+            && selectedMonth !== highlightedMonth 
+            && map.getLayer(`${highlightedMonth}-sightings`)
         ) {
-            map.removeLayer(`${highlightedMonth}-month-sightings`)
+            map.setPaintProperty(`${highlightedMonth}-sightings`, "circle-color", "#ffffff");
+            map.setPaintProperty(`${highlightedMonth}-sightings`, "circle-radius", 4);
+            map.setPaintProperty(`${highlightedMonth}-sightings`, "circle-stroke-width", 1);
             setHighlightedMonth(selectedMonth)
         }
-    }, [map, highlightedMonth, selectedMonth])
+    }, [map, highlightedMonth, selectedMonth, mapType])
 
     return (
+        // Mapbox had trouble rendering in a container with a conditional height,
+        // so conditionally return a container with a set height instead
         mapType === "mobile"
             ? <div id={`${mapType}-map-container`} className="h-mobileMap"></div>
             : <div id={`${mapType}-map-container`} className="h-screen"></div>

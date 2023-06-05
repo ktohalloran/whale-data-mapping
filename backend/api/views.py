@@ -6,15 +6,21 @@ from api.models import Sighting
 from api.serializers import SightingListSerializer
 
 class GetSightings(APIView):
+    """
+    If species and year is provided, returns sighting data filtered by those parameters
+    organized by month. If no query parameters, returns list of distinct species and years.
+    If too many or too few parameters are provided or are not species and year, an error
+    is returned. 
+    """
     def get(self, request):
-        # if no query parameters, return unique species & years
+        # if no query parameters are provided, return list of distinct species & years
         if (len(request.query_params)==0):
             species = Sighting.objects.order_by().values_list("species_common_name", flat=True).distinct()
             year_datetimes = Sighting.objects.dates("date", "year")
             # Django returns a list of datetimes, so convert to a list of years
             years = [y.strftime("%Y") for y in year_datetimes]
             return Response({"species": species, "years": years})
-        # if both query parameters, return filtered list
+        # if both query parameters are provided, return filtered list
         if (len(request.query_params)==2):
             if request.query_params.get("species") and request.query_params.get("year"):
                 response_data = []
@@ -31,7 +37,7 @@ class GetSightings(APIView):
                     serializer = SightingListSerializer(month_data)
                     response_data.append(serializer.data)
                 return Response(response_data)
-            # if incorrect query parameter name, return error
+            # if incorrect query parameter name is provided, return error
             return Response(data="Incorrect query parameter provided", status=status.HTTP_400_BAD_REQUEST)
-        # if one query parameter, return an error
+        # if only one or if more than two query parameters are provided, return an error
         return Response(data="Please provide a species and year", status=status.HTTP_400_BAD_REQUEST)
