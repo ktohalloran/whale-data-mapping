@@ -92,7 +92,6 @@ const Map = ({sightingData, selectedMonth, mapType, mapVisible}) => {
                 const sightingsSource = map.getSource(`${idx}-sightings`)
                 if (sightingsSource) {
                     map.removeLayer(`${idx}-sightings`)
-                    map.removeLayer(`${idx}-month-sightings`)
                     map.removeSource(`${idx}-sightings`)
                 }
             }
@@ -101,36 +100,32 @@ const Map = ({sightingData, selectedMonth, mapType, mapVisible}) => {
 
     useEffect(() => {
         // Implements the month hover effect on desktop. When a month has been
-        // selected, check for corresponding map layer and if it doesn't exist, add it
+        // selected on the chart, set that layer's style to highlight it
         if (map
             && selectedMonth !== null
             && mapType === "desktop"
             && map.getSource(`${selectedMonth}-sightings`) 
-            && !map.getLayer(`${selectedMonth}-month-sightings`)
+            && map.getLayer(`${selectedMonth}-sightings`)
             ) { 
                 setHighlightedMonth(selectedMonth)
-                map.addLayer({
-                    "id": `${selectedMonth}-month-sightings`,
-                    "type": "circle",
-                    "source": `${selectedMonth}-sightings`,
-                    "paint": {
-                        "circle-radius": 6,
-                        "circle-color": "#1e40af"
-                    }
-                })
+                map.setPaintProperty(`${selectedMonth}-sightings`, "circle-color", "#1e40af");
+                map.setPaintProperty(`${selectedMonth}-sightings`, "circle-radius", 6);
+                map.setPaintProperty(`${selectedMonth}-sightings`, "circle-stroke-width", 0);
         }
     }, [map, selectedMonth, mapType])
 
     useEffect (() => {
-        // Removes the month layer. Moving the mouse off of a month in
-        // the chart sets selectedMonth to null. Check for an existing
-        // layer based on the previous selection and if it exists, remove it
+        // Resets the month's layer styling. Moving the mouse off of a month in
+        // the chart sets selectedMonth to null. 
         if (map 
-            && selectedMonth !== highlightedMonth 
+            && highlightedMonth !== null
             && mapType === "desktop"
-            && map.getLayer(`${highlightedMonth}-month-sightings`)
+            && selectedMonth !== highlightedMonth 
+            && map.getLayer(`${highlightedMonth}-sightings`)
         ) {
-            map.removeLayer(`${highlightedMonth}-month-sightings`)
+            map.setPaintProperty(`${highlightedMonth}-sightings`, "circle-color", "#ffffff");
+            map.setPaintProperty(`${highlightedMonth}-sightings`, "circle-radius", 4);
+            map.setPaintProperty(`${highlightedMonth}-sightings`, "circle-stroke-width", 1);
             setHighlightedMonth(selectedMonth)
         }
     }, [map, highlightedMonth, selectedMonth, mapType])
