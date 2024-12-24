@@ -9,8 +9,8 @@ def create_date(date):
 
 data = []
 
-with open("../whale_data.json", "r") as original_data:
-    with open("./backend/api/fixtures/sighting_data.json", "w") as fixture:
+with open("whale_data.json", "r") as original_data:
+    with open("backend/api/fixtures/sighting_data.json", "w") as fixture:
         sightings_json = json.load(original_data)
         for sighting in sightings_json:
             data.append({
